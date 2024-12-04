@@ -3,6 +3,7 @@ package com.ttruongdev.hotelmanagement.utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -11,6 +12,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.function.Function;
 
+@Service
 public class JWT {
 
     private static final long EXPIRATION_TIME = 1000 * 60 * 24;

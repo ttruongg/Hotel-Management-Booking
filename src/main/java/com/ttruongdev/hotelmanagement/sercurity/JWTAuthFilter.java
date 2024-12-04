@@ -1,5 +1,6 @@
 package com.ttruongdev.hotelmanagement.sercurity;
 
+import com.ttruongdev.hotelmanagement.service.CustomUserDetailsService;
 import com.ttruongdev.hotelmanagement.utils.JWT;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,7 +25,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
     private JWT jwt;
 
     @Autowired
-    private CachingUserDetailsService cachingUserDetailsService;
+    private CustomUserDetailsService customUserDetailsService;
 
 
     @Override
@@ -42,7 +43,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         userEmail = jwt.extractUsername(jwtToken);
 
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = cachingUserDetailsService.loadUserByUsername(userEmail);
+            UserDetails userDetails = customUserDetailsService.loadUserByUsername(userEmail);
             if (jwt.isValidToken(jwtToken, userDetails)) {
                 SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
                 UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
