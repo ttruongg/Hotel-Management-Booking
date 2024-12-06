@@ -1,6 +1,6 @@
 package com.ttruongdev.hotelmanagement.service;
 
-import com.ttruongdev.hotelmanagement.exception.Exception;
+import com.ttruongdev.hotelmanagement.exception.AppException;
 import com.ttruongdev.hotelmanagement.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +15,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username).orElseThrow(() -> new Exception("Username/email not Found!"));
+        return userRepository.findByEmail(username).orElseThrow(() -> new AppException("Username/email not Found!"));
     }
 }
