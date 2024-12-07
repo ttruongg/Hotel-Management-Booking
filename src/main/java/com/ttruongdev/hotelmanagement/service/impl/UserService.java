@@ -15,6 +15,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService implements IUserService {
     @Autowired
@@ -83,21 +85,78 @@ public class UserService implements IUserService {
 
     @Override
     public Response getAllUser() {
-        return null;
+        Response response = new Response();
+        try {
+            List<User> userList = userRepository.findAll();
+            List<UserDTO> userDTOList = Utils.mapUserListEntityToUserListDTO(userList);
+            response.setStatusCode(200);
+            response.setMessage("successful");
+            response.setUserList(userDTOList);
+
+        } catch (Exception ex) {
+            response.setStatusCode(500);
+            response.setMessage("Error getting all users " + ex.getMessage());
+        }
+
+        return response;
     }
 
     @Override
     public Response getUserById(String id) {
-        return null;
+        Response response = new Response();
+        try {
+            User user = userRepository.findById(Long.valueOf(id)).orElseThrow(() -> new AppException("User not found"));
+            UserDTO userDTO = Utils.mapUserEntityToUserDTO(user);
+            response.setStatusCode(200);
+            response.setMessage("successful");
+            response.setUser(userDTO);
+        } catch (AppException ex) {
+            response.setStatusCode(404);
+            response.setMessage(ex.getMessage());
+
+        } catch (Exception ex) {
+            response.setStatusCode(500);
+            response.setMessage("Error getting user " + ex.getMessage());
+        }
+        return response;
     }
 
     @Override
     public Response getUserBookingHistory(String id) {
-        return null;
+        Response response = new Response();
+        try {
+            User user = userRepository.findById(Long.valueOf(id)).orElseThrow(() -> new AppException("User not found"));
+            UserDTO userDTO = Utils.mapUserEntityToUserDTOPlusUserBookingsAndRoom(user);
+            response.setStatusCode(200);
+            response.setMessage("Successful");
+            response.setUser(userDTO);
+
+        } catch (AppException ex) {
+            response.setStatusCode(404);
+            response.setMessage(ex.getMessage());
+        } catch (Exception ex) {
+            response.setStatusCode(500);
+            response.setMessage("Error getting user " + ex.getMessage());
+        }
+        return response;
     }
 
     @Override
     public Response deleteUser(String id) {
-        return null;
+        Response response = new Response();
+        try {
+            userRepository.findById(Long.valueOf(id)).orElseThrow(() -> new AppException("User not found"));
+            userRepository.deleteById(Long.valueOf(id));
+            response.setStatusCode(200);
+            response.setMessage("successful");
+
+        } catch (AppException ex) {
+            response.setStatusCode(404);
+            response.setMessage(ex.getMessage());
+        } catch (Exception ex) {
+            response.setStatusCode(500);
+            response.setMessage("Error deleting user " + ex.getMessage());
+        }
+        return response;
     }
 }
